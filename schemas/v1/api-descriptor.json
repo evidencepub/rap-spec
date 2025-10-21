@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/api-descriptor.json",
+  "title": "ResearchAPIDescriptor",
+  "description": "Discovery metadata for a RAP-compliant API",
+  "type": "object",
+  "required": ["@context", "@type", "paper", "api", "endpoints"],
+  
+  "properties": {
+    "@context": {"const": "https://rap-spec.evidencepub.io/v1/context"},
+    "@type": {"const": "ResearchAPIDescriptor"},
+    
+    "paper": {
+      "type": "object",
+      "required": ["doi", "title"],
+      "properties": {
+        "doi": {
+          "type": "string",
+          "pattern": "^10\\.\\d{4,}/[\\S]+$"
+        },
+        "title": {"type": "string"},
+        "authors": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "publicationDate": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    
+    "api": {
+      "type": "object",
+      "required": ["version", "rapSpecVersion", "baseUrl"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "rapSpecVersion": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "baseUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "documentation": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "methods"],
+        "properties": {
+          "path": {"type": "string"},
+          "methods": {
+            "type": "array",
+            "items": {"enum": ["GET", "POST", "PUT", "DELETE"]}
+          },
+          "description": {"type": "string"}
+        }
+      }
+    },
+    
+    "license": {"type": "string"},
+    "accessPolicy": {
+      "type": "string",
+      "enum": ["open", "authenticated", "embargoed"]
+    }
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/collection.json",
+  "title": "ResearchProductCollection",
+  "description": "A collection of research products with filtering capabilities",
+  "type": "object",
+  "required": ["@context", "@type", "@id", "totalItems", "member"],
+  
+  "properties": {
+    "@context": {
+      "oneOf": [
+        {"const": "https://rap-spec.evidencepub.io/v1/context"},
+        {"type": "object"}
+      ]
+    },
+    "@type": {
+      "const": "ResearchProductCollection"
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI of this collection"
+    },
+    
+    "totalItems": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of products in the collection"
+    },
+    
+    "filter": {
+      "type": "object",
+      "description": "Information about applied and available filters",
+      "properties": {
+        "applied": {
+          "type": "object",
+          "description": "Currently applied filters",
+          "properties": {
+            "participant": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "array", "items": {"type": "string"}}
+              ]
+            },
+            "measure": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "array", "items": {"type": "string"}}
+              ]
+            },
+            "session": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "array", "items": {"type": "string"}}
+              ]
+            },
+            "group": {"type": "string"},
+            "processingLevel": {
+              "type": "string",
+              "enum": ["raw", "preprocessed", "analysis_ready", "aggregated"]
+            }
+          },
+          "additionalProperties": true
+        },
+        "available": {
+          "type": "object",
+          "description": "All available filter values",
+          "properties": {
+            "participant": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of all participant IDs"
+            },
+            "measure": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of all measurement types"
+            },
+            "session": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of all session types"
+            },
+            "group": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of all experimental groups"
+            },
+            "processingLevel": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of all processing levels"
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    
+    "member": {
+      "type": "array",
+      "description": "Array of research products in this collection",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Full ResearchProduct object",
+            "$ref": "https://rap-spec.evidencepub.io/v1/schemas/research-product.json"
+          },
+          {
+            "type": "object",
+            "description": "Summary representation of ResearchProduct",
+            "required": ["@type", "@id", "identifier"],
+            "properties": {
+              "@type": {"const": "ResearchProduct"},
+              "@id": {"type": "string", "format": "uri"},
+              "identifier": {"type": "string"},
+              "participant": {
+                "type": "object",
+                "properties": {
+                  "@id": {"type": "string", "format": "uri"},
+                  "identifier": {"type": "string"}
+                }
+              },
+              "measurement": {
+                "type": "object",
+                "properties": {
+                  "measurementType": {"type": "string"},
+                  "session": {"type": "string"}
+                }
+              },
+              "summary": {
+                "type": "object",
+                "description": "Brief summary of the product",
+                "properties": {
+                  "dimensions": {
+                    "type": "array",
+                    "items": {"type": "integer"}
+                  },
+                  "units": {"type": "string"},
+                  "duration": {"type": "string"},
+                  "sampleCount": {"type": "integer"}
+                },
+                "additionalProperties": true
+              },
+              "distribution": {
+                "type": "object",
+                "properties": {
+                  "@type": {"const": "DataDownload"},
+                  "contentUrl": {"type": "string", "format": "uri"},
+                  "contentSize": {"type": "string"}
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    
+    "pagination": {
+      "type": "object",
+      "description": "Pagination information for large collections",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current page number"
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of items per page"
+        },
+        "totalPages": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total number of pages"
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "first": {"type": "string", "format": "uri"},
+            "prev": {"type": "string", "format": "uri"},
+            "next": {"type": "string", "format": "uri"},
+            "last": {"type": "string", "format": "uri"}
+          }
+        }
+      }
+    },
+    
+    "sortedBy": {
+      "type": "object",
+      "description": "Current sort order",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Field name being sorted by"
+        },
+        "order": {
+          "type": "string",
+          "enum": ["asc", "desc"]
+        }
+      }
+    }
+  }
+}

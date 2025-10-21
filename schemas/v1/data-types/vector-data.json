@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/data-types/vector-data.json",
+  "title": "VectorData",
+  "description": "Schema for vector data (1D array of values)",
+  "type": "object",
+  "required": ["@type", "values", "unit"],
+  
+  "properties": {
+    "@type": {
+      "const": "VectorData"
+    },
+    
+    "values": {
+      "type": "array",
+      "description": "Array of numeric values",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 1
+    },
+    
+    "unit": {
+      "description": "Unit of measurement for all values",
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^http://qudt\\.org/vocab/unit/"
+        },
+        {
+          "type": "object",
+          "required": ["symbol"],
+          "properties": {
+            "@type": {"const": "Unit"},
+            "symbol": {"type": "string"},
+            "label": {"type": "string"},
+            "uri": {"type": "string", "format": "uri"}
+          }
+        }
+      ]
+    },
+    
+    "length": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of elements in the vector"
+    },
+    
+    "labels": {
+      "type": "array",
+      "description": "Optional labels for each value",
+      "items": {"type": "string"}
+    },
+    
+    "statistics": {
+      "type": "object",
+      "description": "Summary statistics for the vector",
+      "properties": {
+        "mean": {"type": "number"},
+        "median": {"type": "number"},
+        "std": {"type": "number"},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "count": {"type": "integer"}
+      }
+    },
+    
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the vector",
+      "additionalProperties": true
+    }
+  }
+}

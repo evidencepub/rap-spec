@@ -1,0 +1,208 @@
+{
+  "@context": [
+    "https://rap-spec.evidencepub.io/v1/context",
+    "https://rap-spec.evidencepub.io/v1/measurements/relaxometry-mri-context"
+  ],
+  "@type": "ResearchProduct",
+  "@id": "https://qmri-study.example.com/api/v1/products/sub-01-t1-ses-01-gm",
+  
+  "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "DOI",
+    "value": "10.xxxx/qmri-paper#sub-01-t1-ses-01-gm"
+  },
+  
+  "productType": "processed_vector",
+  "processingLevel": "analysis_ready",
+  
+  "participant": {
+    "@type": "Participant",
+    "@id": "https://qmri-study.example.com/api/v1/participants/sub-01",
+    "identifier": "sub-01",
+    "demographicData": {
+      "age": {"value": 32, "unit": "YR"},
+      "sex": "M",
+      "group": "healthy_control"
+    }
+  },
+  
+  "measurement": {
+    "@type": "Measurement",
+    "measurementType": "relaxometry_mri",
+    "specificMeasure": "t1_relaxation_time",
+    "session": "ses-01",
+    "anatomicalRegion": "gray_matter",
+    "regionType": "tissue_class",
+    
+    "unit": {
+      "@type": "Unit",
+      "symbol": "ms",
+      "label": "milliseconds",
+      "uri": "http://qudt.org/vocab/unit/MilliSEC"
+    },
+    
+    "quantityKind": "http://qudt.org/vocab/quantitykind/Time",
+    
+    "vectorLength": 2847,
+    
+    "spatialResolution": {
+      "value": 1.0,
+      "unit": {
+        "@type": "Unit",
+        "symbol": "mm",
+        "uri": "http://qudt.org/vocab/unit/MilliM"
+      }
+    },
+    
+    "coordinateSystem": "MNI152",
+    
+    "acquisitionParameters": {
+      "fieldStrength": {
+        "value": 3.0,
+        "unit": {
+          "@type": "Unit",
+          "symbol": "T",
+          "uri": "http://qudt.org/vocab/unit/T"
+        }
+      },
+      "scanner": "Siemens Prisma",
+      "sequence": "MP2RAGE",
+      "TI": [700, 2500],
+      "TR": 5000,
+      "TE": 2.98,
+      "flipAngle": 4
+    }
+  },
+  
+  "data": {
+    "@type": "VectorData",
+    "values": [
+      1345, 1352, 1338, 1361, 1349, 1355, 1342, 1368, 1351, 1347,
+      1359, 1343, 1357, 1346, 1363, 1340, 1354, 1348, 1362, 1350,
+      1344, 1358, 1341, 1356, 1353, 1360, 1339, 1365, 1337, 1366,
+      1335, 1367, 1334, 1369, 1333, 1370, 1332, 1371, 1331, 1372,
+      1336, 1364, 1338, 1362, 1340, 1360, 1342, 1358, 1344, 1356
+    ],
+    "length": 2847,
+    
+    "unit": {
+      "@type": "Unit",
+      "symbol": "ms",
+      "label": "milliseconds",
+      "uri": "http://qudt.org/vocab/unit/MilliSEC"
+    },
+    
+    "statistics": {
+      "mean": 1342,
+      "std": 118,
+      "median": 1340,
+      "min": 1180,
+      "max": 1520,
+      "count": 2847
+    },
+    
+    "metadata": {
+      "anatomicalRegion": "gray_matter",
+      "hemisphere": "bilateral",
+      "tissueThreshold": 0.5
+    }
+  },
+  
+  "provenance": {
+    "@type": "ProcessingProvenance",
+    "wasDerivedFrom": {
+      "@id": "https://openneuro.org/datasets/ds004711/sub-01/ses-01/anat/sub-01_ses-01_T1map.nii.gz"
+    },
+    "processingSteps": [
+      {
+        "@type": "ProcessingStep",
+        "stepOrder": 1,
+        "name": "brain_extraction",
+        "softwareAgent": {
+          "@type": "SoftwareApplication",
+          "name": "FSL BET",
+          "version": "6.0.5"
+        }
+      },
+      {
+        "@type": "ProcessingStep",
+        "stepOrder": 2,
+        "name": "tissue_segmentation",
+        "softwareAgent": {
+          "@type": "SoftwareApplication",
+          "name": "FSL FAST",
+          "version": "6.0.5"
+        }
+      },
+      {
+        "@type": "ProcessingStep",
+        "stepOrder": 3,
+        "name": "spatial_normalization",
+        "softwareAgent": {
+          "@type": "SoftwareApplication",
+          "name": "ANTs",
+          "version": "2.4.0"
+        }
+      },
+      {
+        "@type": "ProcessingStep",
+        "stepOrder": 4,
+        "name": "roi_extraction",
+        "parameters": {
+          "tissue_mask": "gray_matter",
+          "threshold": 0.5
+        }
+      },
+      {
+        "@type": "ProcessingStep",
+        "stepOrder": 5,
+        "name": "outlier_removal",
+        "parameters": {
+          "min_t1": 500,
+          "max_t1": 2500,
+          "method": "iqr",
+          "factor": 1.5
+        }
+      }
+    ]
+  },
+  
+  "computeEnvironment": {
+    "@type": "ComputeEnvironment",
+    "containerImage": {
+      "@type": "SoftwareApplication",
+      "identifier": "docker.io/qmrilab/pipeline:v1.3"
+    }
+  },
+  
+  "qualityMetrics": {
+    "@type": "QualityAssessment",
+    "snr": {"value": 42.3},
+    "voxelCount": 2847,
+    "coverage": {"value": 0.94}
+  },
+  
+  "license": {
+    "@type": "CreativeWork",
+    "@id": "https://creativecommons.org/licenses/by/4.0/",
+    "name": "CC-BY-4.0"
+  },
+  
+  "citation": {
+    "@type": "ScholarlyArticle",
+    "identifier": {
+      "@type": "PropertyValue",
+      "propertyID": "DOI",
+      "value": "10.xxxx/qmri-paper"
+    },
+    "name": "Quantitative T1 and T2 relaxometry reveals microstructural changes in healthy aging"
+  },
+  
+  "distribution": {
+    "@type": "DataDownload",
+    "contentUrl": "https://qmri-study.example.com/api/v1/products/sub-01-t1-ses-01-gm/download",
+    "encodingFormat": "application/json",
+    "contentSize": "56.9 KB",
+    "description": "Download link for this vector data"
+  }
+}

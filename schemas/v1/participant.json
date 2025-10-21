@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/participant.json",
+  "title": "Participant",
+  "description": "A research participant with associated demographic data and available products",
+  "type": "object",
+  "required": ["@context", "@type", "@id", "identifier"],
+  
+  "properties": {
+    "@context": {
+      "oneOf": [
+        {"const": "https://rap-spec.evidencepub.io/v1/context"},
+        {"type": "object"}
+      ]
+    },
+    "@type": {
+      "const": "Participant"
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique URI for this participant"
+    },
+    
+    "identifier": {
+      "type": "string",
+      "description": "Participant ID (e.g., P001)",
+      "pattern": "^[A-Z0-9_-]+$"
+    },
+    
+    "demographicData": {
+      "type": "object",
+      "description": "Demographic and experimental group information",
+      "properties": {
+        "age": {
+          "type": "object",
+          "properties": {
+            "@type": {"const": "QuantityValue"},
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Age value"
+            },
+            "unit": {
+              "type": "string",
+              "default": "YR",
+              "description": "Unit of age (typically YR for years)"
+            }
+          },
+          "required": ["value"]
+        },
+        "sex": {
+          "type": "string",
+          "enum": ["M", "F", "other", "unknown"],
+          "description": "Biological sex"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender identity"
+        },
+        "group": {
+          "type": "string",
+          "description": "Experimental group assignment",
+          "examples": ["experimental", "control", "treatment_a", "treatment_b"]
+        },
+        "ethnicity": {
+          "type": "string",
+          "description": "Self-reported ethnicity"
+        },
+        "handedness": {
+          "type": "string",
+          "enum": ["left", "right", "ambidextrous", "unknown"]
+        },
+        "species": {
+          "type": "string",
+          "default": "human",
+          "description": "Species (for animal studies)",
+          "examples": ["human", "mouse", "rat", "monkey"]
+        },
+        "strain": {
+          "type": "string",
+          "description": "Genetic strain (for animal studies)",
+          "examples": ["C57BL/6J", "Sprague-Dawley"]
+        },
+        "geneticModification": {
+          "type": "string",
+          "description": "Genetic modifications (for animal studies)"
+        }
+      },
+      "additionalProperties": true
+    },
+    
+    "enrollmentDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Date participant was enrolled in study"
+    },
+    
+    "status": {
+      "type": "string",
+      "enum": ["active", "completed", "withdrawn", "excluded"],
+      "description": "Current participation status"
+    },
+    
+    "exclusionReason": {
+      "type": "string",
+      "description": "Reason for exclusion if status is 'excluded'"
+    },
+    
+    "clinicalData": {
+      "type": "object",
+      "description": "Clinical or health-related information",
+      "properties": {
+        "diagnosis": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Clinical diagnoses"
+        },
+        "medicationHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "dosage": {"type": "string"},
+              "duration": {"type": "string"}
+            }
+          }
+        },
+        "assessments": {
+          "type": "array",
+          "description": "Clinical assessment scores",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "score": {"type": "number"},
+              "date": {"type": "string", "format": "date"}
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    
+    "productsAvailable": {
+      "type": "object",
+      "description": "Summary of available data products for this participant",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of products"
+        },
+        "measures": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Types of measurements available"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Sessions with data"
+        },
+        "byMeasure": {
+          "type": "object",
+          "description": "Product counts by measurement type",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "examples": [
+            {
+              "calcium_imaging": 3,
+              "behavioral_choice": 3,
+              "reaction_time": 3
+            }
+          ]
+        },
+        "bySession": {
+          "type": "object",
+          "description": "Product counts by session",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "examples": [
+            {
+              "baseline": 4,
+              "task1": 4,
+              "task2": 4
+            }
+          ]
+        }
+      }
+    },
+    
+    "sessionMetadata": {
+      "type": "array",
+      "description": "Metadata about each experimental session",
+      "items": {
+        "type": "object",
+        "properties": {
+          "session": {"type": "string"},
+          "date": {"type": "string", "format": "date"},
+          "duration": {
+            "type": "object",
+            "properties": {
+              "value": {"type": "number"},
+              "unit": {"type": "string", "default": "MIN"}
+            }
+          },
+          "notes": {"type": "string"},
+          "experimenter": {"type": "string"},
+          "environment": {
+            "type": "object",
+            "description": "Environmental conditions",
+            "properties": {
+              "temperature": {"type": "number"},
+              "lighting": {"type": "string"},
+              "noiseLevel": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    
+    "links": {
+      "type": "object",
+      "description": "Links to related resources",
+      "properties": {
+        "products": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to all products for this participant"
+        },
+        "measures": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to available measures"
+        },
+        "sessions": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to session metadata"
+        }
+      }
+    },
+    
+    "consent": {
+      "type": "object",
+      "description": "Information about consent and data sharing",
+      "properties": {
+        "consentDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "consentVersion": {
+          "type": "string",
+          "description": "Version of consent form used"
+        },
+        "dataSharing": {
+          "type": "string",
+          "enum": ["public", "restricted", "private"],
+          "description": "Level of data sharing permitted"
+        },
+        "restrictions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Specific restrictions on data use"
+        }
+      }
+    },
+    
+    "privacyLevel": {
+      "type": "string",
+      "enum": ["anonymous", "pseudonymous", "identifiable"],
+      "default": "pseudonymous",
+      "description": "Level of privacy protection"
+    }
+  }
+}

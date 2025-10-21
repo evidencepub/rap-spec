@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/research-product.json",
+  "title": "ResearchProduct",
+  "description": "A processed, analysis-ready research data product",
+  "type": "object",
+  "required": ["@context", "@type", "@id", "productType", "processingLevel", "participant", "measurement"],
+  
+  "properties": {
+    "@context": {
+      "oneOf": [
+        {"const": "https://rap-spec.evidencepub.io/v1/context"},
+        {"type": "object"}
+      ]
+    },
+    "@type": {
+      "const": "ResearchProduct"
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique URI identifying this research product"
+    },
+    
+    "identifier": {
+      "type": "object",
+      "properties": {
+        "@type": {"const": "PropertyValue"},
+        "propertyID": {"const": "DOI"},
+        "value": {
+          "type": "string",
+          "pattern": "^10\\.\\d{4,}/[\\S]+$"
+        }
+      }
+    },
+    
+    "productType": {
+      "type": "string",
+      "enum": [
+        "processed_timeseries",
+        "processed_scalar",
+        "processed_image",
+        "processed_spatial",
+        "processed_categorical",
+        "processed_vector"
+      ],
+      "description": "Type of data product"
+    },
+    
+    "processingLevel": {
+      "type": "string",
+      "enum": ["raw", "preprocessed", "analysis_ready", "aggregated"],
+      "description": "Level of processing applied"
+    },
+
+    "data": {
+      "description": "The actual data for this research product",
+      "oneOf": [
+        {"$ref": "https://rap-spec.org/v1/schemas/data-types/vector-data.json"}
+      ]
+    },
+    
+    "participant": {
+      "type": "object",
+      "required": ["@id", "identifier"],
+      "properties": {
+        "@type": {"const": "Participant"},
+        "@id": {"type": "string", "format": "uri"},
+        "identifier": {"type": "string"},
+        "demographicData": {
+          "type": "object",
+          "properties": {
+            "age": {
+              "type": "object",
+              "properties": {
+                "value": {"type": "number", "minimum": 0},
+                "unit": {"type": "string"}
+              }
+            },
+            "sex": {"type": "string", "enum": ["M", "F", "other", "unknown"]},
+            "group": {"type": "string"}
+          }
+        }
+      }
+    },
+    
+    "measurement": {
+      "description": "Measurement details - must conform to one of the measurement schemas",
+      "oneOf": [
+        {"$ref": "https://rap-spec.org/v1/schemas/measurements/relaxometry-mri-context.jsonld"},
+        {"$ref": "https://rap-spec.org/v1/schemas/measurements/timeseries-context.jsonld"}
+      ]
+    },
+    
+    "provenance": {
+      "type": "object",
+      "required": ["wasDerivedFrom", "processingSteps"],
+      "properties": {
+        "@type": {"const": "ProcessingProvenance"},
+        "wasDerivedFrom": {
+          "type": "object",
+          "properties": {
+            "@id": {"type": "string", "format": "uri"}
+          }
+        },
+        "processingSteps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["stepOrder", "name"],
+            "properties": {
+              "@type": {"const": "ProcessingStep"},
+              "stepOrder": {"type": "integer", "minimum": 1},
+              "name": {"type": "string"},
+              "softwareAgent": {
+                "type": "object",
+                "properties": {
+                  "@type": {"const": "SoftwareApplication"},
+                  "name": {"type": "string"},
+                  "version": {"type": "string"},
+                  "url": {"type": "string", "format": "uri"}
+                }
+              },
+              "parameters": {"type": "object"}
+            }
+          }
+        }
+      }
+    },
+    
+    "computeEnvironment": {
+      "type": "object",
+      "properties": {
+        "@type": {"const": "ComputeEnvironment"},
+        "containerImage": {
+          "type": "object",
+          "properties": {
+            "@type": {"const": "SoftwareApplication"},
+            "identifier": {"type": "string"}
+          }
+        }
+      }
+    },
+    
+    "license": {
+      "type": "object",
+      "required": ["@id"],
+      "properties": {
+        "@type": {"const": "CreativeWork"},
+        "@id": {"type": "string", "format": "uri"},
+        "name": {"type": "string"}
+      }
+    },
+    
+    "distribution": {
+      "type": "object",
+      "required": ["contentUrl"],
+      "properties": {
+        "@type": {"const": "DataDownload"},
+        "contentUrl": {"type": "string", "format": "uri"},
+        "encodingFormat": {"type": "string"},
+        "contentSize": {"type": "string"}
+      }
+    }
+  }
+}

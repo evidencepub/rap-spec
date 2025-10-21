@@ -1,0 +1,41 @@
+{
+  "@context": {
+    "@version": 1.1,
+    
+    "rap": "https://rap-spec.evidencepub.io/v1/vocab#",
+    "schema": "https://schema.org/",
+    "qudt": "http://qudt.org/schema/qudt/",
+    
+    "Measurement": {
+      "@id": "rap:Measurement",
+      "@type": "@id"
+    },
+    
+    "measurementType": {
+      "@id": "rap:measurementType",
+      "@type": "schema:Text"
+    },
+    "specificMeasure": {
+      "@id": "rap:specificMeasure",
+      "@type": "schema:Text"
+    },
+    "session": {
+      "@id": "rap:session",
+      "@type": "schema:Text"
+    },
+    "unit": {
+      "@id": "qudt:unit",
+      "@type": "@id"
+    },
+    "quantityKind": {
+      "@id": "qudt:hasQuantityKind",
+      "@type": "@id"
+    },
+    "Unit": {
+      "@id": "qudt:Unit",
+      "@type": "@id"
+    },
+    "symbol": "qudt:symbol",
+    "label": "schema:name"
+  }
+}

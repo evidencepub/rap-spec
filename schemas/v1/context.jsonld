@@ -1,0 +1,194 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "https://rap-spec.evidencepub/v1/vocab#",
+    
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "qudt": "http://qudt.org/schema/qudt/",
+    "qunit": "http://qudt.org/vocab/unit/",
+    "qkind": "http://qudt.org/vocab/quantitykind/",
+    "prov": "http://www.w3.org/ns/prov#",
+    
+    "rap": "https://rap-spec.evidencepub.io/v1/vocab#",
+    
+    "ResearchProduct": {
+      "@id": "rap:ResearchProduct",
+      "@type": "@id"
+    },
+    "ResearchProductCollection": {
+      "@id": "rap:ResearchProductCollection",
+      "@type": "@id"
+    },
+    "AggregateStatistics": {
+      "@id": "rap:AggregateStatistics",
+      "@type": "@id"
+    },
+    "Participant": {
+      "@id": "rap:Participant",
+      "@type": "@id"
+    },
+    "ParticipantCollection": {
+      "@id": "rap:ParticipantCollection",
+      "@type": "@id"
+    },
+    "Measurement": {
+      "@id": "rap:Measurement",
+      "@type": "@id"
+    },
+    "ProcessingProvenance": {
+      "@id": "rap:ProcessingProvenance",
+      "@type": "@id"
+    },
+    "ProcessingStep": {
+      "@id": "rap:ProcessingStep",
+      "@type": "@id"
+    },
+    "ComputeEnvironment": {
+      "@id": "rap:ComputeEnvironment",
+      "@type": "@id"
+    },
+    "Unit": {
+      "@id": "qudt:Unit",
+      "@type": "@id"
+    },
+    "QuantityValue": {
+      "@id": "qudt:QuantityValue",
+      "@type": "@id"
+    },
+    
+    "productType": {
+      "@id": "rap:productType",
+      "@type": "schema:Text"
+    },
+    "processingLevel": {
+      "@id": "rap:processingLevel",
+      "@type": "schema:Text"
+    },
+    "participant": {
+      "@id": "rap:participant",
+      "@type": "@id"
+    },
+    "measurement": {
+      "@id": "rap:measurement",
+      "@type": "@id"
+    },
+    "provenance": {
+      "@id": "prov:wasGeneratedBy",
+      "@type": "@id"
+    },
+    "wasDerivedFrom": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    },
+    "processingSteps": {
+      "@id": "rap:processingSteps",
+      "@container": "@list"
+    },
+    
+    "measurementType": {
+      "@id": "rap:measurementType",
+      "@type": "schema:Text"
+    },
+    "specificMeasure": {
+      "@id": "rap:specificMeasure",
+      "@type": "schema:Text"
+    },
+    "session": {
+      "@id": "rap:session",
+      "@type": "schema:Text"
+    },
+    
+    "identifier": "schema:identifier",
+    "name": "schema:name",
+    "description": "schema:description",
+    "license": "schema:license",
+    "citation": "schema:citation",
+    "url": "schema:url",
+    "version": "schema:version",
+    
+    "unit": {
+      "@id": "qudt:unit",
+      "@type": "@id"
+    },
+    "value": "qudt:numericValue",
+    "quantityKind": {
+      "@id": "qudt:hasQuantityKind",
+      "@type": "@id"
+    },
+    "symbol": "qudt:symbol",
+    
+    "demographicData": {
+      "@id": "rap:demographicData",
+      "@type": "@id"
+    },
+    "age": {
+      "@id": "schema:age"
+    },
+    "sex": {
+      "@id": "schema:gender"
+    },
+    "group": {
+      "@id": "rap:experimentalGroup",
+      "@type": "schema:Text"
+    },
+    
+    "distribution": {
+      "@id": "schema:distribution",
+      "@type": "@id"
+    },
+    "contentUrl": "schema:contentUrl",
+    "encodingFormat": "schema:encodingFormat",
+    "contentSize": "schema:contentSize",
+    
+    "statistics": {
+      "@id": "rap:statistics",
+      "@type": "@id"
+    },
+    "mean": "rap:mean",
+    "median": "rap:median",
+    "std": "rap:standardDeviation",
+    "min": "rap:minimum",
+    "max": "rap:maximum",
+    
+    "aggregates": {
+      "@id": "rap:aggregates",
+      "@container": "@list"
+    },
+    "comparison": {
+      "@id": "rap:comparison",
+      "@type": "@id"
+    },
+    
+    "member": {
+      "@id": "schema:member",
+      "@container": "@set"
+    },
+    "totalItems": "schema:numberOfItems",
+    "filter": {
+      "@id": "rap:filter",
+      "@type": "@id"
+    },
+    
+    "productsAvailable": {
+      "@id": "rap:productsAvailable",
+      "@type": "@id"
+    },
+    "sessionMetadata": {
+      "@id": "rap:sessionMetadata",
+      "@container": "@list"
+    },
+    "clinicalData": {
+      "@id": "rap:clinicalData",
+      "@type": "@id"
+    },
+    "consent": {
+      "@id": "rap:consent",
+      "@type": "@id"
+    },
+    "privacyLevel": {
+      "@id": "rap:privacyLevel",
+      "@type": "schema:Text"
+    }
+  }
+}
