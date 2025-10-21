@@ -1,282 +1,884 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rap-spec.evidencepub.io/v1/schemas/participant.json",
-  "title": "Participant",
-  "description": "A research participant with associated demographic data and available products",
-  "type": "object",
-  "required": ["@context", "@type", "@id", "identifier"],
-  
-  "properties": {
-    "@context": {
-      "oneOf": [
-        {"const": "https://rap-spec.evidencepub.io/v1/context"},
-        {"type": "object"}
-      ]
-    },
-    "@type": {
-      "const": "Participant"
-    },
-    "@id": {
-      "type": "string",
-      "format": "uri",
-      "description": "Unique URI for this participant"
-    },
-    
-    "identifier": {
-      "type": "string",
-      "description": "Participant ID (e.g., P001)",
-      "pattern": "^[A-Z0-9_-]+$"
-    },
-    
-    "demographicData": {
-      "type": "object",
-      "description": "Demographic and experimental group information",
+  "$defs": {
+    "Age": {
+      "description": "Age information.",
       "properties": {
-        "age": {
-          "type": "object",
-          "properties": {
-            "@type": {"const": "QuantityValue"},
-            "value": {
-              "type": "number",
-              "minimum": 0,
-              "description": "Age value"
-            },
-            "unit": {
-              "type": "string",
-              "default": "YR",
-              "description": "Unit of age (typically YR for years)"
-            }
-          },
-          "required": ["value"]
+        "@type": {
+          "const": "QuantityValue",
+          "default": "QuantityValue",
+          "enum": [
+            "QuantityValue"
+          ],
+          "title": "@Type",
+          "type": "string"
         },
-        "sex": {
-          "type": "string",
-          "enum": ["M", "F", "other", "unknown"],
-          "description": "Biological sex"
+        "value": {
+          "description": "Age value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
         },
-        "gender": {
-          "type": "string",
-          "description": "Gender identity"
-        },
-        "group": {
-          "type": "string",
-          "description": "Experimental group assignment",
-          "examples": ["experimental", "control", "treatment_a", "treatment_b"]
-        },
-        "ethnicity": {
-          "type": "string",
-          "description": "Self-reported ethnicity"
-        },
-        "handedness": {
-          "type": "string",
-          "enum": ["left", "right", "ambidextrous", "unknown"]
-        },
-        "species": {
-          "type": "string",
-          "default": "human",
-          "description": "Species (for animal studies)",
-          "examples": ["human", "mouse", "rat", "monkey"]
-        },
-        "strain": {
-          "type": "string",
-          "description": "Genetic strain (for animal studies)",
-          "examples": ["C57BL/6J", "Sprague-Dawley"]
-        },
-        "geneticModification": {
-          "type": "string",
-          "description": "Genetic modifications (for animal studies)"
+        "unit": {
+          "default": "YR",
+          "description": "Unit of age (typically YR for years)",
+          "title": "Unit",
+          "type": "string"
         }
       },
-      "additionalProperties": true
+      "required": [
+        "value"
+      ],
+      "title": "Age",
+      "type": "object"
     },
-    
-    "enrollmentDate": {
-      "type": "string",
-      "format": "date",
-      "description": "Date participant was enrolled in study"
+    "Assessment": {
+      "description": "Clinical assessment entry.",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Assessment name",
+          "title": "Name"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Assessment score",
+          "title": "Score"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Assessment date",
+          "title": "Date"
+        }
+      },
+      "title": "Assessment",
+      "type": "object"
     },
-    
-    "status": {
-      "type": "string",
-      "enum": ["active", "completed", "withdrawn", "excluded"],
-      "description": "Current participation status"
-    },
-    
-    "exclusionReason": {
-      "type": "string",
-      "description": "Reason for exclusion if status is 'excluded'"
-    },
-    
-    "clinicalData": {
-      "type": "object",
-      "description": "Clinical or health-related information",
+    "ClinicalData": {
+      "description": "Clinical or health-related information.",
       "properties": {
         "diagnosis": {
-          "type": "array",
-          "items": {"type": "string"},
-          "description": "Clinical diagnoses"
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Clinical diagnoses",
+          "title": "Diagnosis"
         },
         "medicationHistory": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {"type": "string"},
-              "dosage": {"type": "string"},
-              "duration": {"type": "string"}
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Medication"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
             }
-          }
+          ],
+          "default": null,
+          "description": "Medication history",
+          "title": "Medicationhistory"
         },
         "assessments": {
-          "type": "array",
-          "description": "Clinical assessment scores",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {"type": "string"},
-              "score": {"type": "number"},
-              "date": {"type": "string", "format": "date"}
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Assessment"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
             }
-          }
+          ],
+          "default": null,
+          "description": "Clinical assessment scores",
+          "title": "Assessments"
         }
       },
-      "additionalProperties": true
+      "title": "ClinicalData",
+      "type": "object"
     },
-    
-    "productsAvailable": {
-      "type": "object",
-      "description": "Summary of available data products for this participant",
-      "properties": {
-        "count": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Total number of products"
-        },
-        "measures": {
-          "type": "array",
-          "items": {"type": "string"},
-          "description": "Types of measurements available"
-        },
-        "sessions": {
-          "type": "array",
-          "items": {"type": "string"},
-          "description": "Sessions with data"
-        },
-        "byMeasure": {
-          "type": "object",
-          "description": "Product counts by measurement type",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "examples": [
-            {
-              "calcium_imaging": 3,
-              "behavioral_choice": 3,
-              "reaction_time": 3
-            }
-          ]
-        },
-        "bySession": {
-          "type": "object",
-          "description": "Product counts by session",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "examples": [
-            {
-              "baseline": 4,
-              "task1": 4,
-              "task2": 4
-            }
-          ]
-        }
-      }
-    },
-    
-    "sessionMetadata": {
-      "type": "array",
-      "description": "Metadata about each experimental session",
-      "items": {
-        "type": "object",
-        "properties": {
-          "session": {"type": "string"},
-          "date": {"type": "string", "format": "date"},
-          "duration": {
-            "type": "object",
-            "properties": {
-              "value": {"type": "number"},
-              "unit": {"type": "string", "default": "MIN"}
-            }
-          },
-          "notes": {"type": "string"},
-          "experimenter": {"type": "string"},
-          "environment": {
-            "type": "object",
-            "description": "Environmental conditions",
-            "properties": {
-              "temperature": {"type": "number"},
-              "lighting": {"type": "string"},
-              "noiseLevel": {"type": "string"}
-            }
-          }
-        }
-      }
-    },
-    
-    "links": {
-      "type": "object",
-      "description": "Links to related resources",
-      "properties": {
-        "products": {
-          "type": "string",
-          "format": "uri",
-          "description": "Link to all products for this participant"
-        },
-        "measures": {
-          "type": "string",
-          "format": "uri",
-          "description": "Link to available measures"
-        },
-        "sessions": {
-          "type": "string",
-          "format": "uri",
-          "description": "Link to session metadata"
-        }
-      }
-    },
-    
-    "consent": {
-      "type": "object",
-      "description": "Information about consent and data sharing",
+    "Consent": {
+      "description": "Information about consent and data sharing.",
       "properties": {
         "consentDate": {
-          "type": "string",
-          "format": "date"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Consent date",
+          "title": "Consentdate"
         },
         "consentVersion": {
-          "type": "string",
-          "description": "Version of consent form used"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Version of consent form used",
+          "title": "Consentversion"
         },
         "dataSharing": {
-          "type": "string",
-          "enum": ["public", "restricted", "private"],
-          "description": "Level of data sharing permitted"
+          "anyOf": [
+            {
+              "enum": [
+                "public",
+                "restricted",
+                "private"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Level of data sharing permitted",
+          "title": "Datasharing"
         },
         "restrictions": {
-          "type": "array",
-          "items": {"type": "string"},
-          "description": "Specific restrictions on data use"
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Specific restrictions on data use",
+          "title": "Restrictions"
         }
-      }
+      },
+      "title": "Consent",
+      "type": "object"
     },
-    
-    "privacyLevel": {
-      "type": "string",
-      "enum": ["anonymous", "pseudonymous", "identifiable"],
-      "default": "pseudonymous",
-      "description": "Level of privacy protection"
+    "DemographicData": {
+      "description": "Demographic and experimental group information.",
+      "properties": {
+        "age": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Age"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Participant age"
+        },
+        "sex": {
+          "anyOf": [
+            {
+              "enum": [
+                "M",
+                "F",
+                "other",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Biological sex",
+          "title": "Sex"
+        },
+        "gender": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Gender identity",
+          "title": "Gender"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Experimental group assignment",
+          "examples": [
+            "experimental",
+            "control",
+            "treatment_a",
+            "treatment_b"
+          ],
+          "title": "Group"
+        },
+        "ethnicity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Self-reported ethnicity",
+          "title": "Ethnicity"
+        },
+        "handedness": {
+          "anyOf": [
+            {
+              "enum": [
+                "left",
+                "right",
+                "ambidextrous",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Handedness",
+          "title": "Handedness"
+        },
+        "species": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "human",
+          "description": "Species (for animal studies)",
+          "examples": [
+            "human",
+            "mouse",
+            "rat",
+            "monkey"
+          ],
+          "title": "Species"
+        },
+        "strain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Genetic strain (for animal studies)",
+          "examples": [
+            "C57BL/6J",
+            "Sprague-Dawley"
+          ],
+          "title": "Strain"
+        },
+        "geneticModification": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Genetic modifications (for animal studies)",
+          "title": "Geneticmodification"
+        }
+      },
+      "title": "DemographicData",
+      "type": "object"
+    },
+    "Environment": {
+      "description": "Environmental conditions.",
+      "properties": {
+        "temperature": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Temperature",
+          "title": "Temperature"
+        },
+        "lighting": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Lighting conditions",
+          "title": "Lighting"
+        },
+        "noiseLevel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Noise level",
+          "title": "Noiselevel"
+        }
+      },
+      "title": "Environment",
+      "type": "object"
+    },
+    "Links": {
+      "description": "Links to related resources.",
+      "properties": {
+        "products": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link to all products for this participant",
+          "title": "Products"
+        },
+        "measures": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link to available measures",
+          "title": "Measures"
+        },
+        "sessions": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link to session metadata",
+          "title": "Sessions"
+        }
+      },
+      "title": "Links",
+      "type": "object"
+    },
+    "Medication": {
+      "description": "Medication history entry.",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Medication name",
+          "title": "Name"
+        },
+        "dosage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dosage",
+          "title": "Dosage"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of use",
+          "title": "Duration"
+        }
+      },
+      "title": "Medication",
+      "type": "object"
+    },
+    "ProductsAvailable": {
+      "description": "Summary of available data products for this participant.",
+      "properties": {
+        "count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total number of products",
+          "title": "Count"
+        },
+        "measures": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Types of measurements available",
+          "title": "Measures"
+        },
+        "sessions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Sessions with data",
+          "title": "Sessions"
+        },
+        "byMeasure": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product counts by measurement type",
+          "title": "Bymeasure"
+        },
+        "bySession": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product counts by session",
+          "title": "Bysession"
+        }
+      },
+      "title": "ProductsAvailable",
+      "type": "object"
+    },
+    "SessionDuration": {
+      "description": "Session duration.",
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration value",
+          "title": "Value"
+        },
+        "unit": {
+          "default": "MIN",
+          "description": "Duration unit",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "title": "SessionDuration",
+      "type": "object"
+    },
+    "SessionMetadata": {
+      "description": "Metadata about an experimental session.",
+      "properties": {
+        "session": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session identifier",
+          "title": "Session"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session date",
+          "title": "Date"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SessionDuration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session duration"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session notes",
+          "title": "Notes"
+        },
+        "experimenter": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Experimenter name",
+          "title": "Experimenter"
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Environment"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Environmental conditions"
+        }
+      },
+      "title": "SessionMetadata",
+      "type": "object"
     }
-  }
+  },
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/participant.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A research participant with associated demographic data and available products.\n\nContains demographic information, clinical data, consent information,\nand summaries of available data products.",
+  "properties": {
+    "@context": {
+      "anyOf": [
+        {
+          "const": "https://rap-spec.evidencepub.io/v1/context",
+          "enum": [
+            "https://rap-spec.evidencepub.io/v1/context"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "@Context"
+    },
+    "@type": {
+      "const": "Participant",
+      "default": "Participant",
+      "enum": [
+        "Participant"
+      ],
+      "title": "@Type",
+      "type": "string"
+    },
+    "@id": {
+      "description": "Unique URI for this participant",
+      "format": "uri",
+      "maxLength": 2083,
+      "minLength": 1,
+      "title": "@Id",
+      "type": "string"
+    },
+    "identifier": {
+      "description": "Participant ID (e.g., sub-01, P001)",
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Identifier",
+      "type": "string"
+    },
+    "demographicData": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DemographicData"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Demographic and experimental group information"
+    },
+    "enrollmentDate": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Date participant was enrolled in study",
+      "title": "Enrollmentdate"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "enum": [
+            "active",
+            "completed",
+            "withdrawn",
+            "excluded"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Current participation status",
+      "title": "Status"
+    },
+    "exclusionReason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reason for exclusion if status is 'excluded'",
+      "title": "Exclusionreason"
+    },
+    "clinicalData": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ClinicalData"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Clinical or health-related information"
+    },
+    "productsAvailable": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProductsAvailable"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Summary of available data products for this participant"
+    },
+    "sessionMetadata": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/SessionMetadata"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Metadata about each experimental session",
+      "title": "Sessionmetadata"
+    },
+    "links": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Links"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Links to related resources"
+    },
+    "consent": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Consent"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Information about consent and data sharing"
+    },
+    "privacyLevel": {
+      "anyOf": [
+        {
+          "enum": [
+            "anonymous",
+            "pseudonymous",
+            "identifiable"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "pseudonymous",
+      "description": "Level of privacy protection",
+      "title": "Privacylevel"
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "identifier"
+  ],
+  "title": "Participant",
+  "type": "object"
 }

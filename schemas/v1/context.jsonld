@@ -1,8 +1,8 @@
 {
   "@context": {
     "@version": 1.1,
-    "@vocab": "https://rap-spec.evidencepub/v1/vocab#",
-    
+    "@vocab": "https://rap-spec.evidencepub.io/v1/vocab#",
+
     "schema": "https://schema.org/",
     "dcterms": "http://purl.org/dc/terms/",
     "qudt": "http://qudt.org/schema/qudt/",
@@ -11,7 +11,9 @@
     "prov": "http://www.w3.org/ns/prov#",
     
     "rap": "https://rap-spec.evidencepub.io/v1/vocab#",
-    
+    "rapmri": "https://rap-spec.evidencepub.io/v1/vocab/mri#",
+    "rapts": "https://rap-spec.evidencepub.io/v1/vocab/timeseries#",
+
     "ResearchProduct": {
       "@id": "rap:ResearchProduct",
       "@type": "@id"
@@ -189,6 +191,90 @@
     "privacyLevel": {
       "@id": "rap:privacyLevel",
       "@type": "schema:Text"
+    },
+
+    "anatomicalRegion": {
+      "@id": "rapmri:anatomicalRegion",
+      "@type": "schema:Text"
+    },
+    "regionType": {
+      "@id": "rapmri:regionType",
+      "@type": "schema:Text"
+    },
+    "vectorLength": {
+      "@id": "rapmri:vectorLength",
+      "@type": "schema:Integer"
+    },
+    "spatialResolution": {
+      "@id": "rapmri:spatialResolution",
+      "@type": "@id"
+    },
+    "coordinateSystem": {
+      "@id": "rapmri:coordinateSystem",
+      "@type": "schema:Text"
+    },
+    "acquisitionParameters": {
+      "@id": "rapmri:acquisitionParameters",
+      "@type": "@id"
+    },
+    "fieldStrength": {
+      "@id": "rapmri:fieldStrength",
+      "@type": "@id"
+    },
+    "scanner": {
+      "@id": "rapmri:scanner",
+      "@type": "schema:Text"
+    },
+    "sequence": {
+      "@id": "rapmri:sequence",
+      "@type": "schema:Text"
+    },
+    "TR": {
+      "@id": "rapmri:repetitionTime",
+      "@type": "schema:Number"
+    },
+    "TE": {
+      "@id": "rapmri:echoTime"
+    },
+    "TI": {
+      "@id": "rapmri:inversionTime"
+    },
+    "flipAngle": {
+      "@id": "rapmri:flipAngle",
+      "@type": "schema:Number"
+    },
+
+    "dimensions": {
+      "@id": "rapts:dimensions",
+      "@type": "@id"
+    },
+    "time": {
+      "@id": "rapts:timeDimension",
+      "@type": "@id"
+    },
+    "length": {
+      "@id": "rapts:length",
+      "@type": "schema:Integer"
+    },
+    "samplingRate": {
+      "@id": "rapts:samplingRate",
+      "@type": "@id"
+    },
+    "duration": {
+      "@id": "rapts:duration",
+      "@type": "@id"
+    },
+    "channels": {
+      "@id": "rapts:channels",
+      "@type": "@id"
+    },
+    "count": {
+      "@id": "rapts:count",
+      "@type": "schema:Integer"
+    },
+    "labels": {
+      "@id": "rapts:channelLabels",
+      "@container": "@list"
     }
   }
 }

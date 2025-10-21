@@ -1,0 +1,351 @@
+{
+  "$defs": {
+    "Channels": {
+      "description": "Channel information for multi-channel timeseries.",
+      "properties": {
+        "count": {
+          "description": "Number of channels",
+          "minimum": 1,
+          "title": "Count",
+          "type": "integer"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Type of channels",
+          "title": "Type"
+        },
+        "labels": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Labels for each channel",
+          "title": "Labels"
+        }
+      },
+      "required": [
+        "count"
+      ],
+      "title": "Channels",
+      "type": "object"
+    },
+    "Dimensions": {
+      "description": "Dimensions of the timeseries data.",
+      "properties": {
+        "time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeDimension"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Time dimension information"
+        }
+      },
+      "title": "Dimensions",
+      "type": "object"
+    },
+    "Duration": {
+      "description": "Total duration of the timeseries.",
+      "properties": {
+        "value": {
+          "description": "Duration value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Duration unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "Duration",
+      "type": "object"
+    },
+    "SamplingRate": {
+      "description": "Sampling rate of the timeseries.",
+      "properties": {
+        "value": {
+          "description": "Sampling rate value",
+          "exclusiveMinimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Sampling rate unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "SamplingRate",
+      "type": "object"
+    },
+    "TimeDimension": {
+      "description": "Time dimension information.",
+      "properties": {
+        "length": {
+          "description": "Number of time points",
+          "minimum": 1,
+          "title": "Length",
+          "type": "integer"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start time",
+          "title": "Start"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End time",
+          "title": "End"
+        }
+      },
+      "required": [
+        "length"
+      ],
+      "title": "TimeDimension",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Unit of measurement (QUDT-compatible structure).",
+      "properties": {
+        "@type": {
+          "const": "Unit",
+          "default": "Unit",
+          "enum": [
+            "Unit"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "symbol": {
+          "description": "Unit symbol (e.g., ms, Hz)",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable unit label",
+          "title": "Label"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT unit URI",
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "title": "Unit",
+      "type": "object"
+    }
+  },
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/measurements/timeseries.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Measurement schema for timeseries data.\n\nExtends BaseMeasurement with timeseries-specific fields.",
+  "properties": {
+    "@type": {
+      "const": "Measurement",
+      "default": "Measurement",
+      "description": "Type identifier for measurements",
+      "enum": [
+        "Measurement"
+      ],
+      "title": "@Type",
+      "type": "string"
+    },
+    "measurementType": {
+      "const": "timeseries",
+      "default": "timeseries",
+      "description": "Type of measurement",
+      "enum": [
+        "timeseries"
+      ],
+      "title": "Measurementtype",
+      "type": "string"
+    },
+    "specificMeasure": {
+      "description": "Specific timeseries measure",
+      "examples": [
+        "calcium_imaging",
+        "eeg",
+        "ecg",
+        "behavioral_response",
+        "neural_activity"
+      ],
+      "title": "Specificmeasure",
+      "type": "string"
+    },
+    "session": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Session identifier for longitudinal studies",
+      "title": "Session"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Unit"
+        },
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unit of measurement",
+      "title": "Unit"
+    },
+    "quantityKind": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "QUDT quantity kind URI (e.g., http://qudt.org/vocab/quantitykind/Time)",
+      "title": "Quantitykind"
+    },
+    "dimensions": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Dimensions"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Dimensions of the timeseries data"
+    },
+    "samplingRate": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SamplingRate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Sampling rate of the timeseries"
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Duration"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Total duration of the timeseries"
+    },
+    "channels": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Channels"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Channel information for multi-channel timeseries"
+    }
+  },
+  "required": [
+    "specificMeasure"
+  ],
+  "title": "TimeseriesMeasurement",
+  "type": "object"
+}

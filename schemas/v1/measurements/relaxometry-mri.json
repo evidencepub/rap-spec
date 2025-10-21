@@ -1,0 +1,401 @@
+{
+  "$defs": {
+    "AcquisitionParameters": {
+      "description": "MRI acquisition parameters.",
+      "properties": {
+        "fieldStrength": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FieldStrength"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Magnetic field strength"
+        },
+        "scanner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scanner manufacturer and model",
+          "title": "Scanner"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MRI pulse sequence used",
+          "title": "Sequence"
+        },
+        "TR": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Repetition time in ms",
+          "title": "Tr"
+        },
+        "TE": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Echo time(s) in ms",
+          "title": "Te"
+        },
+        "TI": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inversion time(s) in ms",
+          "title": "Ti"
+        },
+        "flipAngle": {
+          "anyOf": [
+            {
+              "maximum": 180.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flip angle in degrees",
+          "title": "Flipangle"
+        }
+      },
+      "title": "AcquisitionParameters",
+      "type": "object"
+    },
+    "FieldStrength": {
+      "description": "Magnetic field strength.",
+      "properties": {
+        "value": {
+          "description": "Field strength value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Field strength unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "FieldStrength",
+      "type": "object"
+    },
+    "SpatialResolution": {
+      "description": "Spatial resolution of the measurement.",
+      "properties": {
+        "value": {
+          "description": "Resolution value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Unit of spatial resolution"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "SpatialResolution",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Unit of measurement (QUDT-compatible structure).",
+      "properties": {
+        "@type": {
+          "const": "Unit",
+          "default": "Unit",
+          "enum": [
+            "Unit"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "symbol": {
+          "description": "Unit symbol (e.g., ms, Hz)",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable unit label",
+          "title": "Label"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT unit URI",
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "title": "Unit",
+      "type": "object"
+    }
+  },
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/measurements/relaxometry-mri.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Measurement schema for MRI relaxometry data.\n\nExtends BaseMeasurement with MRI-specific fields.",
+  "properties": {
+    "@type": {
+      "const": "Measurement",
+      "default": "Measurement",
+      "description": "Type identifier for measurements",
+      "enum": [
+        "Measurement"
+      ],
+      "title": "@Type",
+      "type": "string"
+    },
+    "measurementType": {
+      "const": "relaxometry_mri",
+      "default": "relaxometry_mri",
+      "description": "Type of measurement",
+      "enum": [
+        "relaxometry_mri"
+      ],
+      "title": "Measurementtype",
+      "type": "string"
+    },
+    "specificMeasure": {
+      "description": "Specific relaxometry measure",
+      "examples": [
+        "t1_relaxation_time",
+        "t2_relaxation_time",
+        "t2star_relaxation_time"
+      ],
+      "title": "Specificmeasure",
+      "type": "string"
+    },
+    "session": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Session identifier for longitudinal studies",
+      "title": "Session"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Unit"
+        },
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unit of measurement",
+      "title": "Unit"
+    },
+    "quantityKind": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "QUDT quantity kind URI (e.g., http://qudt.org/vocab/quantitykind/Time)",
+      "title": "Quantitykind"
+    },
+    "anatomicalRegion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Anatomical region measured",
+      "examples": [
+        "gray_matter",
+        "white_matter",
+        "hippocampus",
+        "cortex"
+      ],
+      "title": "Anatomicalregion"
+    },
+    "regionType": {
+      "anyOf": [
+        {
+          "enum": [
+            "tissue_class",
+            "anatomical_roi",
+            "functional_roi",
+            "voxel_wise"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Type of region definition",
+      "title": "Regiontype"
+    },
+    "vectorLength": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Number of values in the measurement vector",
+      "title": "Vectorlength"
+    },
+    "spatialResolution": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SpatialResolution"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Spatial resolution of the measurement"
+    },
+    "coordinateSystem": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Coordinate system used",
+      "examples": [
+        "MNI152",
+        "Talairach",
+        "native"
+      ],
+      "title": "Coordinatesystem"
+    },
+    "acquisitionParameters": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AcquisitionParameters"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "MRI acquisition parameters"
+    }
+  },
+  "required": [
+    "specificMeasure"
+  ],
+  "title": "RelaxometryMRIMeasurement",
+  "type": "object"
+}

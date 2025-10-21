@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "Unit": {
+      "description": "Unit of measurement (QUDT-compatible structure).",
+      "properties": {
+        "@type": {
+          "const": "Unit",
+          "default": "Unit",
+          "enum": [
+            "Unit"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "symbol": {
+          "description": "Unit symbol (e.g., ms, Hz)",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable unit label",
+          "title": "Label"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT unit URI",
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "title": "Unit",
+      "type": "object"
+    }
+  },
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/measurements/base-measurement.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Base schema for all measurement types.\n\nDomain-specific measurement types should extend this class.",
+  "properties": {
+    "@type": {
+      "const": "Measurement",
+      "default": "Measurement",
+      "description": "Type identifier for measurements",
+      "enum": [
+        "Measurement"
+      ],
+      "title": "@Type",
+      "type": "string"
+    },
+    "measurementType": {
+      "description": "Type of measurement (e.g., relaxometry_mri, timeseries)",
+      "title": "Measurementtype",
+      "type": "string"
+    },
+    "specificMeasure": {
+      "description": "Specific measure within the measurement type",
+      "title": "Specificmeasure",
+      "type": "string"
+    },
+    "session": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Session identifier for longitudinal studies",
+      "title": "Session"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Unit"
+        },
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unit of measurement",
+      "title": "Unit"
+    },
+    "quantityKind": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "QUDT quantity kind URI (e.g., http://qudt.org/vocab/quantitykind/Time)",
+      "title": "Quantitykind"
+    }
+  },
+  "required": [
+    "measurementType",
+    "specificMeasure"
+  ],
+  "title": "BaseMeasurement",
+  "type": "object"
+}

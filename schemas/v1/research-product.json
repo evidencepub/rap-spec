@@ -1,41 +1,1370 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "AcquisitionParameters": {
+      "description": "MRI acquisition parameters.",
+      "properties": {
+        "fieldStrength": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FieldStrength"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Magnetic field strength"
+        },
+        "scanner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scanner manufacturer and model",
+          "title": "Scanner"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MRI pulse sequence used",
+          "title": "Sequence"
+        },
+        "TR": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Repetition time in ms",
+          "title": "Tr"
+        },
+        "TE": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Echo time(s) in ms",
+          "title": "Te"
+        },
+        "TI": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inversion time(s) in ms",
+          "title": "Ti"
+        },
+        "flipAngle": {
+          "anyOf": [
+            {
+              "maximum": 180.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flip angle in degrees",
+          "title": "Flipangle"
+        }
+      },
+      "title": "AcquisitionParameters",
+      "type": "object"
+    },
+    "Channels": {
+      "description": "Channel information for multi-channel timeseries.",
+      "properties": {
+        "count": {
+          "description": "Number of channels",
+          "minimum": 1,
+          "title": "Count",
+          "type": "integer"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Type of channels",
+          "title": "Type"
+        },
+        "labels": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Labels for each channel",
+          "title": "Labels"
+        }
+      },
+      "required": [
+        "count"
+      ],
+      "title": "Channels",
+      "type": "object"
+    },
+    "ComputeEnvironment": {
+      "description": "Computational environment information.",
+      "properties": {
+        "@type": {
+          "const": "ComputeEnvironment",
+          "default": "ComputeEnvironment",
+          "enum": [
+            "ComputeEnvironment"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "containerImage": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Container image information",
+          "title": "Containerimage"
+        }
+      },
+      "title": "ComputeEnvironment",
+      "type": "object"
+    },
+    "CreativeWork": {
+      "description": "Creative work (for licenses).",
+      "properties": {
+        "@type": {
+          "const": "CreativeWork",
+          "default": "CreativeWork",
+          "enum": [
+            "CreativeWork"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "@id": {
+          "description": "License URI",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "@Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "License name",
+          "title": "Name"
+        }
+      },
+      "required": [
+        "@id"
+      ],
+      "title": "CreativeWork",
+      "type": "object"
+    },
+    "DataDownload": {
+      "description": "Distribution/download information.",
+      "properties": {
+        "@type": {
+          "const": "DataDownload",
+          "default": "DataDownload",
+          "enum": [
+            "DataDownload"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "contentUrl": {
+          "description": "Download URL",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Contenturl",
+          "type": "string"
+        },
+        "encodingFormat": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "File format (MIME type)",
+          "title": "Encodingformat"
+        },
+        "contentSize": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "File size",
+          "title": "Contentsize"
+        }
+      },
+      "required": [
+        "contentUrl"
+      ],
+      "title": "DataDownload",
+      "type": "object"
+    },
+    "DemographicData": {
+      "description": "Demographic information for a participant (embedded reference).",
+      "properties": {
+        "age": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Age information",
+          "title": "Age"
+        },
+        "sex": {
+          "anyOf": [
+            {
+              "enum": [
+                "M",
+                "F",
+                "other",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Biological sex",
+          "title": "Sex"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Experimental group assignment",
+          "title": "Group"
+        }
+      },
+      "title": "DemographicData",
+      "type": "object"
+    },
+    "Dimensions": {
+      "description": "Dimensions of the timeseries data.",
+      "properties": {
+        "time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeDimension"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Time dimension information"
+        }
+      },
+      "title": "Dimensions",
+      "type": "object"
+    },
+    "Duration": {
+      "description": "Total duration of the timeseries.",
+      "properties": {
+        "value": {
+          "description": "Duration value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Duration unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "Duration",
+      "type": "object"
+    },
+    "FieldStrength": {
+      "description": "Magnetic field strength.",
+      "properties": {
+        "value": {
+          "description": "Field strength value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Field strength unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "FieldStrength",
+      "type": "object"
+    },
+    "ParticipantReference": {
+      "description": "Reference to a research participant.",
+      "properties": {
+        "@type": {
+          "const": "Participant",
+          "default": "Participant",
+          "enum": [
+            "Participant"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "@id": {
+          "description": "Participant URI",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "@Id",
+          "type": "string"
+        },
+        "identifier": {
+          "description": "Participant ID",
+          "title": "Identifier",
+          "type": "string"
+        },
+        "demographicData": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DemographicData"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Demographic information"
+        }
+      },
+      "required": [
+        "@id",
+        "identifier"
+      ],
+      "title": "ParticipantReference",
+      "type": "object"
+    },
+    "ProcessingProvenance": {
+      "description": "Provenance tracking for data processing pipeline.",
+      "properties": {
+        "@type": {
+          "const": "ProcessingProvenance",
+          "default": "ProcessingProvenance",
+          "enum": [
+            "ProcessingProvenance"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "wasDerivedFrom": {
+          "description": "Source data this was derived from",
+          "title": "Wasderivedfrom",
+          "type": "object"
+        },
+        "processingSteps": {
+          "description": "Processing pipeline steps",
+          "items": {
+            "$ref": "#/$defs/ProcessingStep"
+          },
+          "title": "Processingsteps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "wasDerivedFrom",
+        "processingSteps"
+      ],
+      "title": "ProcessingProvenance",
+      "type": "object"
+    },
+    "ProcessingStep": {
+      "description": "A single step in the data processing pipeline.",
+      "properties": {
+        "@type": {
+          "const": "ProcessingStep",
+          "default": "ProcessingStep",
+          "enum": [
+            "ProcessingStep"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "stepOrder": {
+          "description": "Step order in pipeline",
+          "minimum": 1,
+          "title": "Steporder",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Step name",
+          "title": "Name",
+          "type": "string"
+        },
+        "softwareAgent": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SoftwareApplication"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Software used for this step"
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Processing parameters",
+          "title": "Parameters"
+        }
+      },
+      "required": [
+        "stepOrder",
+        "name"
+      ],
+      "title": "ProcessingStep",
+      "type": "object"
+    },
+    "PropertyValue": {
+      "description": "Property value (used for identifiers like DOI).",
+      "properties": {
+        "@type": {
+          "const": "PropertyValue",
+          "default": "PropertyValue",
+          "enum": [
+            "PropertyValue"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "propertyID": {
+          "description": "Property identifier",
+          "title": "Propertyid",
+          "type": "string"
+        },
+        "value": {
+          "description": "Property value",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "propertyID",
+        "value"
+      ],
+      "title": "PropertyValue",
+      "type": "object"
+    },
+    "RelaxometryMRIMeasurement": {
+      "$id": "https://rap-spec.evidencepub.io/v1/schemas/measurements/relaxometry-mri.json",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "description": "Measurement schema for MRI relaxometry data.\n\nExtends BaseMeasurement with MRI-specific fields.",
+      "properties": {
+        "@type": {
+          "const": "Measurement",
+          "default": "Measurement",
+          "description": "Type identifier for measurements",
+          "enum": [
+            "Measurement"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "measurementType": {
+          "const": "relaxometry_mri",
+          "default": "relaxometry_mri",
+          "description": "Type of measurement",
+          "enum": [
+            "relaxometry_mri"
+          ],
+          "title": "Measurementtype",
+          "type": "string"
+        },
+        "specificMeasure": {
+          "description": "Specific relaxometry measure",
+          "examples": [
+            "t1_relaxation_time",
+            "t2_relaxation_time",
+            "t2star_relaxation_time"
+          ],
+          "title": "Specificmeasure",
+          "type": "string"
+        },
+        "session": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session identifier for longitudinal studies",
+          "title": "Session"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            },
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit of measurement",
+          "title": "Unit"
+        },
+        "quantityKind": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT quantity kind URI (e.g., http://qudt.org/vocab/quantitykind/Time)",
+          "title": "Quantitykind"
+        },
+        "anatomicalRegion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Anatomical region measured",
+          "examples": [
+            "gray_matter",
+            "white_matter",
+            "hippocampus",
+            "cortex"
+          ],
+          "title": "Anatomicalregion"
+        },
+        "regionType": {
+          "anyOf": [
+            {
+              "enum": [
+                "tissue_class",
+                "anatomical_roi",
+                "functional_roi",
+                "voxel_wise"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Type of region definition",
+          "title": "Regiontype"
+        },
+        "vectorLength": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of values in the measurement vector",
+          "title": "Vectorlength"
+        },
+        "spatialResolution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SpatialResolution"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Spatial resolution of the measurement"
+        },
+        "coordinateSystem": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Coordinate system used",
+          "examples": [
+            "MNI152",
+            "Talairach",
+            "native"
+          ],
+          "title": "Coordinatesystem"
+        },
+        "acquisitionParameters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AcquisitionParameters"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MRI acquisition parameters"
+        }
+      },
+      "required": [
+        "specificMeasure"
+      ],
+      "title": "RelaxometryMRIMeasurement",
+      "type": "object"
+    },
+    "SamplingRate": {
+      "description": "Sampling rate of the timeseries.",
+      "properties": {
+        "value": {
+          "description": "Sampling rate value",
+          "exclusiveMinimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Sampling rate unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "SamplingRate",
+      "type": "object"
+    },
+    "ScholarlyArticle": {
+      "description": "Scholarly article citation.",
+      "properties": {
+        "@type": {
+          "const": "ScholarlyArticle",
+          "default": "ScholarlyArticle",
+          "enum": [
+            "ScholarlyArticle"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "identifier": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Article identifier (e.g., DOI)",
+          "title": "Identifier"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Article title",
+          "title": "Name"
+        }
+      },
+      "title": "ScholarlyArticle",
+      "type": "object"
+    },
+    "SoftwareApplication": {
+      "description": "Software application metadata.",
+      "properties": {
+        "@type": {
+          "const": "SoftwareApplication",
+          "default": "SoftwareApplication",
+          "enum": [
+            "SoftwareApplication"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "name": {
+          "description": "Software name",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Software version",
+          "title": "Version"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Software URL",
+          "title": "Url"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "SoftwareApplication",
+      "type": "object"
+    },
+    "SpatialResolution": {
+      "description": "Spatial resolution of the measurement.",
+      "properties": {
+        "value": {
+          "description": "Resolution value",
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            }
+          ],
+          "description": "Unit of spatial resolution"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "SpatialResolution",
+      "type": "object"
+    },
+    "Statistics": {
+      "description": "Summary statistics for the vector.",
+      "properties": {
+        "mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mean value",
+          "title": "Mean"
+        },
+        "median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Median value",
+          "title": "Median"
+        },
+        "std": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Standard deviation",
+          "title": "Std"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minimum value",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum value",
+          "title": "Max"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of values",
+          "title": "Count"
+        }
+      },
+      "title": "Statistics",
+      "type": "object"
+    },
+    "TimeDimension": {
+      "description": "Time dimension information.",
+      "properties": {
+        "length": {
+          "description": "Number of time points",
+          "minimum": 1,
+          "title": "Length",
+          "type": "integer"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start time",
+          "title": "Start"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End time",
+          "title": "End"
+        }
+      },
+      "required": [
+        "length"
+      ],
+      "title": "TimeDimension",
+      "type": "object"
+    },
+    "TimeseriesMeasurement": {
+      "$id": "https://rap-spec.evidencepub.io/v1/schemas/measurements/timeseries.json",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "description": "Measurement schema for timeseries data.\n\nExtends BaseMeasurement with timeseries-specific fields.",
+      "properties": {
+        "@type": {
+          "const": "Measurement",
+          "default": "Measurement",
+          "description": "Type identifier for measurements",
+          "enum": [
+            "Measurement"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "measurementType": {
+          "const": "timeseries",
+          "default": "timeseries",
+          "description": "Type of measurement",
+          "enum": [
+            "timeseries"
+          ],
+          "title": "Measurementtype",
+          "type": "string"
+        },
+        "specificMeasure": {
+          "description": "Specific timeseries measure",
+          "examples": [
+            "calcium_imaging",
+            "eeg",
+            "ecg",
+            "behavioral_response",
+            "neural_activity"
+          ],
+          "title": "Specificmeasure",
+          "type": "string"
+        },
+        "session": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session identifier for longitudinal studies",
+          "title": "Session"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            },
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit of measurement",
+          "title": "Unit"
+        },
+        "quantityKind": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT quantity kind URI (e.g., http://qudt.org/vocab/quantitykind/Time)",
+          "title": "Quantitykind"
+        },
+        "dimensions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Dimensions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dimensions of the timeseries data"
+        },
+        "samplingRate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SamplingRate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Sampling rate of the timeseries"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total duration of the timeseries"
+        },
+        "channels": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Channels"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Channel information for multi-channel timeseries"
+        }
+      },
+      "required": [
+        "specificMeasure"
+      ],
+      "title": "TimeseriesMeasurement",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Unit of measurement (QUDT-compatible structure).",
+      "properties": {
+        "@type": {
+          "const": "Unit",
+          "default": "Unit",
+          "enum": [
+            "Unit"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "symbol": {
+          "description": "Unit symbol (e.g., ms, Hz)",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable unit label",
+          "title": "Label"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT unit URI",
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "title": "Unit",
+      "type": "object"
+    },
+    "VectorData": {
+      "$id": "https://rap-spec.evidencepub.io/v1/schemas/data-types/vector-data.json",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "description": "Schema for vector data (1D array of values).\n\nRepresents a 1D numeric array with associated unit, statistics, and optional metadata.",
+      "properties": {
+        "@type": {
+          "const": "VectorData",
+          "default": "VectorData",
+          "enum": [
+            "VectorData"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "values": {
+          "description": "Array of numeric values",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "title": "Values",
+          "type": "array"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            },
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            }
+          ],
+          "description": "Unit of measurement for all values",
+          "title": "Unit"
+        },
+        "length": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of elements in the vector",
+          "title": "Length"
+        },
+        "labels": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional labels for each value",
+          "title": "Labels"
+        },
+        "statistics": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Statistics"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Summary statistics for the vector"
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional metadata about the vector",
+          "title": "Metadata"
+        }
+      },
+      "required": [
+        "values",
+        "unit"
+      ],
+      "title": "VectorData",
+      "type": "object"
+    }
+  },
   "$id": "https://rap-spec.evidencepub.io/v1/schemas/research-product.json",
-  "title": "ResearchProduct",
-  "description": "A processed, analysis-ready research data product",
-  "type": "object",
-  "required": ["@context", "@type", "@id", "productType", "processingLevel", "participant", "measurement"],
-  
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A processed, analysis-ready research data product.\n\nMain entity representing a research data product with measurement metadata,\nactual data, provenance chain, and distribution information.",
   "properties": {
     "@context": {
-      "oneOf": [
-        {"const": "https://rap-spec.evidencepub.io/v1/context"},
-        {"type": "object"}
-      ]
+      "anyOf": [
+        {
+          "const": "https://rap-spec.evidencepub.io/v1/context",
+          "enum": [
+            "https://rap-spec.evidencepub.io/v1/context"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "@Context"
     },
     "@type": {
-      "const": "ResearchProduct"
+      "const": "ResearchProduct",
+      "default": "ResearchProduct",
+      "enum": [
+        "ResearchProduct"
+      ],
+      "title": "@Type",
+      "type": "string"
     },
     "@id": {
-      "type": "string",
+      "description": "Unique URI identifying this research product",
       "format": "uri",
-      "description": "Unique URI identifying this research product"
+      "maxLength": 2083,
+      "minLength": 1,
+      "title": "@Id",
+      "type": "string"
     },
-    
     "identifier": {
-      "type": "object",
-      "properties": {
-        "@type": {"const": "PropertyValue"},
-        "propertyID": {"const": "DOI"},
-        "value": {
-          "type": "string",
-          "pattern": "^10\\.\\d{4,}/[\\S]+$"
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PropertyValue"
+        },
+        {
+          "type": "null"
         }
-      }
+      ],
+      "default": null,
+      "description": "DOI or other persistent identifier"
     },
-    
     "productType": {
-      "type": "string",
+      "description": "Type of data product",
       "enum": [
         "processed_timeseries",
         "processed_scalar",
@@ -44,123 +1373,135 @@
         "processed_categorical",
         "processed_vector"
       ],
-      "description": "Type of data product"
+      "title": "Producttype",
+      "type": "string"
     },
-    
     "processingLevel": {
-      "type": "string",
-      "enum": ["raw", "preprocessed", "analysis_ready", "aggregated"],
-      "description": "Level of processing applied"
+      "description": "Level of processing applied",
+      "enum": [
+        "raw",
+        "preprocessed",
+        "analysis_ready",
+        "aggregated"
+      ],
+      "title": "Processinglevel",
+      "type": "string"
     },
-
     "data": {
-      "description": "The actual data for this research product",
-      "oneOf": [
-        {"$ref": "https://rap-spec.org/v1/schemas/data-types/vector-data.json"}
-      ]
-    },
-    
-    "participant": {
-      "type": "object",
-      "required": ["@id", "identifier"],
-      "properties": {
-        "@type": {"const": "Participant"},
-        "@id": {"type": "string", "format": "uri"},
-        "identifier": {"type": "string"},
-        "demographicData": {
-          "type": "object",
-          "properties": {
-            "age": {
-              "type": "object",
-              "properties": {
-                "value": {"type": "number", "minimum": 0},
-                "unit": {"type": "string"}
-              }
-            },
-            "sex": {"type": "string", "enum": ["M", "F", "other", "unknown"]},
-            "group": {"type": "string"}
-          }
-        }
-      }
-    },
-    
-    "measurement": {
-      "description": "Measurement details - must conform to one of the measurement schemas",
-      "oneOf": [
-        {"$ref": "https://rap-spec.org/v1/schemas/measurements/relaxometry-mri-context.jsonld"},
-        {"$ref": "https://rap-spec.org/v1/schemas/measurements/timeseries-context.jsonld"}
-      ]
-    },
-    
-    "provenance": {
-      "type": "object",
-      "required": ["wasDerivedFrom", "processingSteps"],
-      "properties": {
-        "@type": {"const": "ProcessingProvenance"},
-        "wasDerivedFrom": {
-          "type": "object",
-          "properties": {
-            "@id": {"type": "string", "format": "uri"}
-          }
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VectorData"
         },
-        "processingSteps": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["stepOrder", "name"],
-            "properties": {
-              "@type": {"const": "ProcessingStep"},
-              "stepOrder": {"type": "integer", "minimum": 1},
-              "name": {"type": "string"},
-              "softwareAgent": {
-                "type": "object",
-                "properties": {
-                  "@type": {"const": "SoftwareApplication"},
-                  "name": {"type": "string"},
-                  "version": {"type": "string"},
-                  "url": {"type": "string", "format": "uri"}
-                }
-              },
-              "parameters": {"type": "object"}
-            }
-          }
+        {
+          "type": "null"
         }
-      }
+      ],
+      "default": null,
+      "description": "The actual data for this research product"
     },
-    
+    "participant": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ParticipantReference"
+        }
+      ],
+      "description": "Reference to the research participant"
+    },
+    "measurement": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RelaxometryMRIMeasurement"
+        },
+        {
+          "$ref": "#/$defs/TimeseriesMeasurement"
+        }
+      ],
+      "description": "Measurement details",
+      "title": "Measurement"
+    },
+    "provenance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProcessingProvenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Provenance tracking for data processing"
+    },
     "computeEnvironment": {
-      "type": "object",
-      "properties": {
-        "@type": {"const": "ComputeEnvironment"},
-        "containerImage": {
-          "type": "object",
-          "properties": {
-            "@type": {"const": "SoftwareApplication"},
-            "identifier": {"type": "string"}
-          }
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ComputeEnvironment"
+        },
+        {
+          "type": "null"
         }
-      }
+      ],
+      "default": null,
+      "description": "Computational environment information"
     },
-    
     "license": {
-      "type": "object",
-      "required": ["@id"],
-      "properties": {
-        "@type": {"const": "CreativeWork"},
-        "@id": {"type": "string", "format": "uri"},
-        "name": {"type": "string"}
-      }
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CreativeWork"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "License for this data product"
     },
-    
     "distribution": {
-      "type": "object",
-      "required": ["contentUrl"],
-      "properties": {
-        "@type": {"const": "DataDownload"},
-        "contentUrl": {"type": "string", "format": "uri"},
-        "encodingFormat": {"type": "string"},
-        "contentSize": {"type": "string"}
-      }
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DataDownload"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Distribution/download information"
+    },
+    "citation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ScholarlyArticle"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Citation to related publication"
+    },
+    "qualityMetrics": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Quality assessment metrics",
+      "title": "Qualitymetrics"
     }
-  }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "productType",
+    "processingLevel",
+    "participant",
+    "measurement"
+  ],
+  "title": "ResearchProduct",
+  "type": "object",
+  "additionalProperties": false
 }

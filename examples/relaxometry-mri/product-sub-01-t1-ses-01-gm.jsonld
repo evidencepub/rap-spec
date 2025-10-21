@@ -1,8 +1,5 @@
 {
-  "@context": [
-    "https://rap-spec.evidencepub.io/v1/context",
-    "https://rap-spec.evidencepub.io/v1/measurements/relaxometry-mri-context"
-  ],
+  "@context": "https://rap-spec.evidencepub.io/v1/context",
   "@type": "ResearchProduct",
   "@id": "https://qmri-study.example.com/api/v1/products/sub-01-t1-ses-01-gm",
   
@@ -83,7 +80,6 @@
       1335, 1367, 1334, 1369, 1333, 1370, 1332, 1371, 1331, 1372,
       1336, 1364, 1338, 1362, 1340, 1360, 1342, 1358, 1344, 1356
     ],
-    "length": 2847,
     
     "unit": {
       "@type": "Unit",

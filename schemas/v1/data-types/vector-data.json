@@ -1,75 +1,241 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Statistics": {
+      "description": "Summary statistics for the vector.",
+      "properties": {
+        "mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mean value",
+          "title": "Mean"
+        },
+        "median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Median value",
+          "title": "Median"
+        },
+        "std": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Standard deviation",
+          "title": "Std"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minimum value",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum value",
+          "title": "Max"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of values",
+          "title": "Count"
+        }
+      },
+      "title": "Statistics",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Unit of measurement (QUDT-compatible structure).",
+      "properties": {
+        "@type": {
+          "const": "Unit",
+          "default": "Unit",
+          "enum": [
+            "Unit"
+          ],
+          "title": "@Type",
+          "type": "string"
+        },
+        "symbol": {
+          "description": "Unit symbol (e.g., ms, Hz)",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable unit label",
+          "title": "Label"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QUDT unit URI",
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "title": "Unit",
+      "type": "object"
+    }
+  },
   "$id": "https://rap-spec.evidencepub.io/v1/schemas/data-types/vector-data.json",
-  "title": "VectorData",
-  "description": "Schema for vector data (1D array of values)",
-  "type": "object",
-  "required": ["@type", "values", "unit"],
-  
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for vector data (1D array of values).\n\nRepresents a 1D numeric array with associated unit, statistics, and optional metadata.",
   "properties": {
     "@type": {
-      "const": "VectorData"
+      "const": "VectorData",
+      "default": "VectorData",
+      "enum": [
+        "VectorData"
+      ],
+      "title": "@Type",
+      "type": "string"
     },
-    
     "values": {
-      "type": "array",
       "description": "Array of numeric values",
       "items": {
         "type": "number"
       },
-      "minItems": 1
+      "minItems": 1,
+      "title": "Values",
+      "type": "array"
     },
-    
     "unit": {
-      "description": "Unit of measurement for all values",
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "format": "uri",
-          "pattern": "^http://qudt\\.org/vocab/unit/"
+          "$ref": "#/$defs/Unit"
         },
         {
-          "type": "object",
-          "required": ["symbol"],
-          "properties": {
-            "@type": {"const": "Unit"},
-            "symbol": {"type": "string"},
-            "label": {"type": "string"},
-            "uri": {"type": "string", "format": "uri"}
-          }
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
         }
-      ]
+      ],
+      "description": "Unit of measurement for all values",
+      "title": "Unit"
     },
-    
     "length": {
-      "type": "integer",
-      "minimum": 1,
-      "description": "Number of elements in the vector"
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Number of elements in the vector",
+      "title": "Length"
     },
-    
     "labels": {
-      "type": "array",
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
       "description": "Optional labels for each value",
-      "items": {"type": "string"}
+      "title": "Labels"
     },
-    
     "statistics": {
-      "type": "object",
-      "description": "Summary statistics for the vector",
-      "properties": {
-        "mean": {"type": "number"},
-        "median": {"type": "number"},
-        "std": {"type": "number"},
-        "min": {"type": "number"},
-        "max": {"type": "number"},
-        "count": {"type": "integer"}
-      }
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Statistics"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Summary statistics for the vector"
     },
-    
     "metadata": {
-      "type": "object",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
       "description": "Additional metadata about the vector",
-      "additionalProperties": true
+      "title": "Metadata"
     }
-  }
+  },
+  "required": [
+    "values",
+    "unit"
+  ],
+  "title": "VectorData",
+  "type": "object"
 }

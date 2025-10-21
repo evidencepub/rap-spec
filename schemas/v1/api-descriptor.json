@@ -1,78 +1,231 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rap-spec.evidencepub.io/v1/schemas/api-descriptor.json",
-  "title": "ResearchAPIDescriptor",
-  "description": "Discovery metadata for a RAP-compliant API",
-  "type": "object",
-  "required": ["@context", "@type", "paper", "api", "endpoints"],
-  
-  "properties": {
-    "@context": {"const": "https://rap-spec.evidencepub.io/v1/context"},
-    "@type": {"const": "ResearchAPIDescriptor"},
-    
-    "paper": {
-      "type": "object",
-      "required": ["doi", "title"],
-      "properties": {
-        "doi": {
-          "type": "string",
-          "pattern": "^10\\.\\d{4,}/[\\S]+$"
-        },
-        "title": {"type": "string"},
-        "authors": {
-          "type": "array",
-          "items": {"type": "string"}
-        },
-        "publicationDate": {
-          "type": "string",
-          "format": "date"
-        }
-      }
-    },
-    
-    "api": {
-      "type": "object",
-      "required": ["version", "rapSpecVersion", "baseUrl"],
+  "$defs": {
+    "API": {
+      "description": "API version and configuration.",
       "properties": {
         "version": {
-          "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "description": "API version (semver)",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "title": "Version",
+          "type": "string"
         },
         "rapSpecVersion": {
-          "type": "string",
-          "pattern": "^\\d+\\.\\d+$"
+          "description": "RAP specification version",
+          "pattern": "^\\d+\\.\\d+$",
+          "title": "Rapspecversion",
+          "type": "string"
         },
         "baseUrl": {
-          "type": "string",
-          "format": "uri"
+          "description": "API base URL",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Baseurl",
+          "type": "string"
         },
         "documentation": {
-          "type": "string",
-          "format": "uri"
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "API documentation URL",
+          "title": "Documentation"
         }
-      }
+      },
+      "required": [
+        "version",
+        "rapSpecVersion",
+        "baseUrl"
+      ],
+      "title": "API",
+      "type": "object"
     },
-    
-    "endpoints": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["path", "methods"],
-        "properties": {
-          "path": {"type": "string"},
-          "methods": {
-            "type": "array",
-            "items": {"enum": ["GET", "POST", "PUT", "DELETE"]}
+    "Endpoint": {
+      "description": "API endpoint definition.",
+      "properties": {
+        "path": {
+          "description": "Endpoint path",
+          "title": "Path",
+          "type": "string"
+        },
+        "methods": {
+          "description": "Supported HTTP methods",
+          "items": {
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "DELETE"
+            ],
+            "type": "string"
           },
-          "description": {"type": "string"}
+          "title": "Methods",
+          "type": "array"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Endpoint description",
+          "title": "Description"
         }
-      }
+      },
+      "required": [
+        "path",
+        "methods"
+      ],
+      "title": "Endpoint",
+      "type": "object"
     },
-    
-    "license": {"type": "string"},
-    "accessPolicy": {
-      "type": "string",
-      "enum": ["open", "authenticated", "embargoed"]
+    "Paper": {
+      "description": "Paper metadata.",
+      "properties": {
+        "doi": {
+          "description": "DOI of the paper",
+          "pattern": "^10\\.\\d{4,}/[\\S]+$",
+          "title": "Doi",
+          "type": "string"
+        },
+        "title": {
+          "description": "Paper title",
+          "title": "Title",
+          "type": "string"
+        },
+        "authors": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "List of authors",
+          "title": "Authors"
+        },
+        "publicationDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Publication date",
+          "title": "Publicationdate"
+        }
+      },
+      "required": [
+        "doi",
+        "title"
+      ],
+      "title": "Paper",
+      "type": "object"
     }
-  }
+  },
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/api-descriptor.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Discovery metadata for a RAP-compliant API.\n\nProvides metadata about the research paper, API configuration, and available endpoints.",
+  "properties": {
+    "@context": {
+      "const": "https://rap-spec.evidencepub.io/v1/context",
+      "enum": [
+        "https://rap-spec.evidencepub.io/v1/context"
+      ],
+      "title": "@Context",
+      "type": "string"
+    },
+    "@type": {
+      "const": "ResearchAPIDescriptor",
+      "default": "ResearchAPIDescriptor",
+      "enum": [
+        "ResearchAPIDescriptor"
+      ],
+      "title": "@Type",
+      "type": "string"
+    },
+    "paper": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Paper"
+        }
+      ],
+      "description": "Paper metadata"
+    },
+    "api": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/API"
+        }
+      ],
+      "description": "API configuration"
+    },
+    "endpoints": {
+      "description": "Available API endpoints",
+      "items": {
+        "$ref": "#/$defs/Endpoint"
+      },
+      "title": "Endpoints",
+      "type": "array"
+    },
+    "license": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Data license",
+      "title": "License"
+    },
+    "accessPolicy": {
+      "anyOf": [
+        {
+          "enum": [
+            "open",
+            "authenticated",
+            "embargoed"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Access policy",
+      "title": "Accesspolicy"
+    }
+  },
+  "required": [
+    "@context",
+    "paper",
+    "api",
+    "endpoints"
+  ],
+  "title": "ResearchAPIDescriptor",
+  "type": "object"
 }

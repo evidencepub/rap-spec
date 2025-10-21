@@ -1,321 +1,1047 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rap-spec.evidencepub.io/v1/schemas/aggregate.json",
-  "title": "AggregateStatistics",
-  "description": "Aggregated statistics across multiple research products",
-  "type": "object",
-  "required": ["@context", "@type", "@id", "measure", "aggregates"],
-  
-  "properties": {
-    "@context": {
-      "oneOf": [
-        {"const": "https://rap-spec.evidencepub.io/v1/context"},
-        {"type": "object"}
-      ]
-    },
-    "@type": {
-      "const": "AggregateStatistics"
-    },
-    "@id": {
-      "type": "string",
-      "format": "uri",
-      "description": "URI of this aggregate query"
-    },
-    
-    "measure": {
-      "type": "string",
-      "description": "The measurement type being aggregated"
-    },
-    
-    "grouping": {
-      "type": "string",
-      "description": "The dimension(s) used for grouping",
-      "examples": ["session", "participant", "group", "participant,session"]
-    },
-    
-    "filters": {
-      "type": "object",
-      "description": "Filters applied before aggregation",
+  "$defs": {
+    "AggregateFilters": {
+      "description": "Filters applied before aggregation.",
       "properties": {
         "participant": {
-          "oneOf": [
-            {"type": "string"},
-            {"type": "array", "items": {"type": "string"}}
-          ]
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Participant filter(s)",
+          "title": "Participant"
         },
         "session": {
-          "oneOf": [
-            {"type": "string"},
-            {"type": "array", "items": {"type": "string"}}
-          ]
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session filter(s)",
+          "title": "Session"
         },
-        "group": {"type": "string"},
+        "group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Group filter",
+          "title": "Group"
+        },
         "ageRange": {
-          "type": "object",
-          "properties": {
-            "min": {"type": "number"},
-            "max": {"type": "number"}
-          }
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Age range filter",
+          "title": "Agerange"
         }
       },
-      "additionalProperties": true
+      "title": "AggregateFilters",
+      "type": "object"
     },
-    
-    "aggregates": {
-      "type": "array",
-      "description": "Array of aggregate results for each group",
-      "items": {
-        "type": "object",
-        "required": ["statistics"],
-        "properties": {
-          "participant": {"type": "string"},
-          "session": {"type": "string"},
-          "group": {"type": "string"},
-          
-          "participantCount": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Number of participants in this group"
-          },
-          
-          "productCount": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Number of products in this group"
-          },
-          
-          "statistics": {
-            "type": "object",
-            "description": "Statistical measures",
-            "properties": {
-              "mean": {
-                "oneOf": [
-                  {"type": "number"},
-                  {
-                    "type": "object",
-                    "properties": {
-                      "value": {"type": "number"},
-                      "units": {"type": "string"}
-                    }
-                  }
-                ]
-              },
-              "median": {"type": "number"},
-              "std": {
-                "type": "number",
-                "description": "Standard deviation"
-              },
-              "sem": {
-                "type": "number",
-                "description": "Standard error of the mean"
-              },
-              "variance": {"type": "number"},
-              "min": {"type": "number"},
-              "max": {"type": "number"},
-              "range": {
-                "type": "array",
-                "items": {"type": "number"},
-                "minItems": 2,
-                "maxItems": 2
-              },
-              "quantiles": {
-                "type": "object",
-                "description": "Quantile values",
-                "properties": {
-                  "q25": {"type": "number"},
-                  "q50": {"type": "number"},
-                  "q75": {"type": "number"}
-                },
-                "additionalProperties": {"type": "number"}
-              },
-              "confidenceInterval": {
-                "type": "object",
-                "properties": {
-                  "level": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 1,
-                    "description": "Confidence level (e.g., 0.95 for 95%)"
-                  },
-                  "lower": {"type": "number"},
-                  "upper": {"type": "number"}
-                }
-              }
-            },
-            "additionalProperties": true
-          },
-          
-          "distribution": {
-            "type": "object",
-            "description": "Distribution information",
-            "properties": {
-              "histogram": {
-                "type": "object",
-                "properties": {
-                  "bins": {
-                    "type": "array",
-                    "items": {"type": "number"}
-                  },
-                  "counts": {
-                    "type": "array",
-                    "items": {"type": "integer"}
-                  }
-                }
-              },
-              "kde": {
-                "type": "object",
-                "description": "Kernel density estimate",
-                "properties": {
-                  "x": {"type": "array", "items": {"type": "number"}},
-                  "y": {"type": "array", "items": {"type": "number"}}
-                }
-              }
-            }
-          },
-          
-          "links": {
-            "type": "object",
-            "description": "Links to related resources",
-            "properties": {
-              "products": {
-                "type": "string",
-                "format": "uri",
-                "description": "Link to products in this group"
-              },
-              "rawData": {
-                "type": "string",
-                "format": "uri",
-                "description": "Link to download raw aggregate data"
-              }
-            }
-          }
-        }
-      }
-    },
-    
-    "comparison": {
-      "type": "object",
-      "description": "Statistical comparison between groups",
+    "AggregateGroup": {
+      "description": "Aggregate results for a single group.",
       "properties": {
-        "groups": {
-          "type": "array",
-          "description": "Groups being compared",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {"type": "string"},
-              "participantCount": {"type": "integer"},
-              "statistics": {
-                "type": "object",
-                "properties": {
-                  "mean": {"type": "number"},
-                  "std": {"type": "number"}
-                }
-              }
+        "participant": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
             }
-          }
+          ],
+          "default": null,
+          "description": "Participant ID",
+          "title": "Participant"
         },
-        "test": {
-          "type": "object",
-          "description": "Statistical test results",
-          "properties": {
-            "method": {
-              "type": "string",
-              "enum": ["t-test", "anova", "mann-whitney", "kruskal-wallis", "chi-square"],
-              "description": "Statistical test used"
+        "session": {
+          "anyOf": [
+            {
+              "type": "string"
             },
-            "statistic": {
-              "type": "number",
-              "description": "Test statistic value"
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Session ID",
+          "title": "Session"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "type": "string"
             },
-            "pValue": {
-              "type": "number",
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Group name",
+          "title": "Group"
+        },
+        "participantCount": {
+          "anyOf": [
+            {
               "minimum": 0,
-              "maximum": 1,
-              "description": "P-value"
+              "type": "integer"
             },
-            "significant": {
-              "type": "boolean",
-              "description": "Whether result is significant at chosen alpha"
-            },
-            "alpha": {
-              "type": "number",
-              "default": 0.05,
-              "description": "Significance threshold"
-            },
-            "effectSize": {
-              "type": "object",
-              "properties": {
-                "measure": {
-                  "type": "string",
-                  "enum": ["cohensD", "hedgesG", "glassD", "eta-squared", "omega-squared"]
-                },
-                "value": {"type": "number"}
-              }
-            },
-            "degreesOfFreedom": {
-              "oneOf": [
-                {"type": "number"},
-                {
-                  "type": "array",
-                  "items": {"type": "number"}
-                }
-              ]
+            {
+              "type": "null"
             }
-          },
-          "required": ["method", "statistic", "pValue"]
+          ],
+          "default": null,
+          "description": "Number of participants in this group",
+          "title": "Participantcount"
         },
-        "postHoc": {
-          "type": "array",
-          "description": "Post-hoc pairwise comparisons",
-          "items": {
-            "type": "object",
-            "properties": {
-              "group1": {"type": "string"},
-              "group2": {"type": "string"},
-              "pValue": {"type": "number"},
-              "adjusted": {
-                "type": "boolean",
-                "description": "Whether p-value is adjusted for multiple comparisons"
-              },
-              "adjustmentMethod": {
-                "type": "string",
-                "enum": ["bonferroni", "holm", "fdr_bh", "fdr_by"]
-              }
+        "productCount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
             }
-          }
+          ],
+          "default": null,
+          "description": "Number of products in this group",
+          "title": "Productcount"
+        },
+        "statistics": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Statistics"
+            }
+          ],
+          "description": "Statistical measures"
+        },
+        "distribution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Distribution"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Distribution information"
+        },
+        "links": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AggregateLinks"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Links to related resources"
         }
-      }
+      },
+      "required": [
+        "statistics"
+      ],
+      "title": "AggregateGroup",
+      "type": "object"
     },
-    
-    "metadata": {
-      "type": "object",
-      "description": "Additional metadata about the aggregation",
+    "AggregateLinks": {
+      "description": "Links to related resources.",
+      "properties": {
+        "products": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link to products in this group",
+          "title": "Products"
+        },
+        "rawData": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link to download raw aggregate data",
+          "title": "Rawdata"
+        }
+      },
+      "title": "AggregateLinks",
+      "type": "object"
+    },
+    "AggregateMetadata": {
+      "description": "Additional metadata about the aggregation.",
       "properties": {
         "computedAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "When these statistics were computed"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When these statistics were computed",
+          "title": "Computedat"
         },
         "softwareUsed": {
-          "type": "object",
-          "properties": {
-            "name": {"type": "string"},
-            "version": {"type": "string"}
-          }
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Software used for computation",
+          "title": "Softwareused"
         },
         "excludedProducts": {
-          "type": "array",
-          "description": "Products excluded from aggregation and why",
-          "items": {
-            "type": "object",
-            "properties": {
-              "productId": {"type": "string"},
-              "reason": {"type": "string"}
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
             }
-          }
+          ],
+          "default": null,
+          "description": "Products excluded from aggregation and why",
+          "title": "Excludedproducts"
         }
-      }
+      },
+      "title": "AggregateMetadata",
+      "type": "object"
+    },
+    "Comparison": {
+      "description": "Statistical comparison between groups.",
+      "properties": {
+        "groups": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ComparisonGroup"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Groups being compared",
+          "title": "Groups"
+        },
+        "test": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/StatisticalTest"
+            }
+          ],
+          "description": "Statistical test results"
+        },
+        "postHoc": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/PostHocComparison"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Post-hoc pairwise comparisons",
+          "title": "Posthoc"
+        }
+      },
+      "required": [
+        "test"
+      ],
+      "title": "Comparison",
+      "type": "object"
+    },
+    "ComparisonGroup": {
+      "description": "Group being compared.",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Group name",
+          "title": "Name"
+        },
+        "participantCount": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of participants",
+          "title": "Participantcount"
+        },
+        "statistics": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Group statistics (mean, std)",
+          "title": "Statistics"
+        }
+      },
+      "title": "ComparisonGroup",
+      "type": "object"
+    },
+    "ConfidenceInterval": {
+      "description": "Confidence interval.",
+      "properties": {
+        "level": {
+          "description": "Confidence level (e.g., 0.95 for 95%)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Level",
+          "type": "number"
+        },
+        "lower": {
+          "description": "Lower bound",
+          "title": "Lower",
+          "type": "number"
+        },
+        "upper": {
+          "description": "Upper bound",
+          "title": "Upper",
+          "type": "number"
+        }
+      },
+      "required": [
+        "level",
+        "lower",
+        "upper"
+      ],
+      "title": "ConfidenceInterval",
+      "type": "object"
+    },
+    "Distribution": {
+      "description": "Distribution information.",
+      "properties": {
+        "histogram": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Histogram"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Histogram distribution"
+        },
+        "kde": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KDE"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Kernel density estimate"
+        }
+      },
+      "title": "Distribution",
+      "type": "object"
+    },
+    "EffectSize": {
+      "description": "Effect size measure.",
+      "properties": {
+        "measure": {
+          "description": "Effect size measure type",
+          "enum": [
+            "cohensD",
+            "hedgesG",
+            "glassD",
+            "eta-squared",
+            "omega-squared"
+          ],
+          "title": "Measure",
+          "type": "string"
+        },
+        "value": {
+          "description": "Effect size value",
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "measure",
+        "value"
+      ],
+      "title": "EffectSize",
+      "type": "object"
+    },
+    "Histogram": {
+      "description": "Histogram distribution.",
+      "properties": {
+        "bins": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Histogram bin edges",
+          "title": "Bins"
+        },
+        "counts": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Counts per bin",
+          "title": "Counts"
+        }
+      },
+      "title": "Histogram",
+      "type": "object"
+    },
+    "KDE": {
+      "description": "Kernel density estimate.",
+      "properties": {
+        "x": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "X values",
+          "title": "X"
+        },
+        "y": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Y values (density)",
+          "title": "Y"
+        }
+      },
+      "title": "KDE",
+      "type": "object"
+    },
+    "MeanValue": {
+      "description": "Mean value with optional units.",
+      "properties": {
+        "value": {
+          "description": "Mean value",
+          "title": "Value",
+          "type": "number"
+        },
+        "units": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Units",
+          "title": "Units"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "MeanValue",
+      "type": "object"
+    },
+    "PostHocComparison": {
+      "description": "Post-hoc pairwise comparison.",
+      "properties": {
+        "group1": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "First group",
+          "title": "Group1"
+        },
+        "group2": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Second group",
+          "title": "Group2"
+        },
+        "pValue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "P-value",
+          "title": "Pvalue"
+        },
+        "adjusted": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether p-value is adjusted for multiple comparisons",
+          "title": "Adjusted"
+        },
+        "adjustmentMethod": {
+          "anyOf": [
+            {
+              "enum": [
+                "bonferroni",
+                "holm",
+                "fdr_bh",
+                "fdr_by"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Adjustment method used",
+          "title": "Adjustmentmethod"
+        }
+      },
+      "title": "PostHocComparison",
+      "type": "object"
+    },
+    "QuantileValues": {
+      "description": "Quantile values.",
+      "properties": {
+        "q25": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "25th percentile",
+          "title": "Q25"
+        },
+        "q50": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "50th percentile (median)",
+          "title": "Q50"
+        },
+        "q75": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "75th percentile",
+          "title": "Q75"
+        }
+      },
+      "title": "QuantileValues",
+      "type": "object"
+    },
+    "StatisticalTest": {
+      "description": "Statistical test results.",
+      "properties": {
+        "method": {
+          "description": "Statistical test used",
+          "enum": [
+            "t-test",
+            "anova",
+            "mann-whitney",
+            "kruskal-wallis",
+            "chi-square"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "statistic": {
+          "description": "Test statistic value",
+          "title": "Statistic",
+          "type": "number"
+        },
+        "pValue": {
+          "description": "P-value",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Pvalue",
+          "type": "number"
+        },
+        "significant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether result is significant at chosen alpha",
+          "title": "Significant"
+        },
+        "alpha": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0.05,
+          "description": "Significance threshold",
+          "title": "Alpha"
+        },
+        "effectSize": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EffectSize"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Effect size"
+        },
+        "degreesOfFreedom": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Degrees of freedom",
+          "title": "Degreesoffreedom"
+        }
+      },
+      "required": [
+        "method",
+        "statistic",
+        "pValue"
+      ],
+      "title": "StatisticalTest",
+      "type": "object"
+    },
+    "Statistics": {
+      "description": "Statistical measures.",
+      "properties": {
+        "mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/MeanValue"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mean value",
+          "title": "Mean"
+        },
+        "median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Median value",
+          "title": "Median"
+        },
+        "std": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Standard deviation",
+          "title": "Std"
+        },
+        "sem": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Standard error of the mean",
+          "title": "Sem"
+        },
+        "variance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Variance",
+          "title": "Variance"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minimum value",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum value",
+          "title": "Max"
+        },
+        "range": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Range [min, max]",
+          "title": "Range"
+        },
+        "quantiles": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QuantileValues"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Quantile values"
+        },
+        "confidenceInterval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceInterval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Confidence interval"
+        }
+      },
+      "title": "Statistics",
+      "type": "object"
     }
-  }
+  },
+  "$id": "https://rap-spec.evidencepub.io/v1/schemas/aggregate.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Aggregated statistics across multiple research products.\n\nProvides group-level statistics, distributions, and statistical comparisons.",
+  "properties": {
+    "@context": {
+      "anyOf": [
+        {
+          "const": "https://rap-spec.evidencepub.io/v1/context",
+          "enum": [
+            "https://rap-spec.evidencepub.io/v1/context"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "@Context"
+    },
+    "@type": {
+      "const": "AggregateStatistics",
+      "default": "AggregateStatistics",
+      "enum": [
+        "AggregateStatistics"
+      ],
+      "title": "@Type",
+      "type": "string"
+    },
+    "@id": {
+      "description": "URI of this aggregate query",
+      "format": "uri",
+      "maxLength": 2083,
+      "minLength": 1,
+      "title": "@Id",
+      "type": "string"
+    },
+    "measure": {
+      "description": "The measurement type being aggregated",
+      "title": "Measure",
+      "type": "string"
+    },
+    "grouping": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The dimension(s) used for grouping",
+      "examples": [
+        "session",
+        "participant",
+        "group",
+        "participant,session"
+      ],
+      "title": "Grouping"
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AggregateFilters"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Filters applied before aggregation"
+    },
+    "aggregates": {
+      "description": "Array of aggregate results for each group",
+      "items": {
+        "$ref": "#/$defs/AggregateGroup"
+      },
+      "title": "Aggregates",
+      "type": "array"
+    },
+    "comparison": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Comparison"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Statistical comparison between groups"
+    },
+    "metadata": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AggregateMetadata"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Additional metadata about the aggregation"
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "measure",
+    "aggregates"
+  ],
+  "title": "AggregateStatistics",
+  "type": "object"
 }
